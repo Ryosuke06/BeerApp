@@ -13,47 +13,103 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
+import { Card } from "@mui/material";
+import CardContent from '@mui/material/CardContent';
+
+
+
+interface Beer {
+    id: string;
+    name: string;
+    brewery: string;
+    type: string;
+    alcohol_content: number;
+    ibu: number;
+    description: string;
+    price: number;
+    country: string;
+    volume_ml: number;
+}
 
 const drawerWidth = 240;
 const navItems = ["Home", "About", "Contact"];
 
-// interface Props {
-//   /**
-//    * Injected by the documentation to work in an iframe.
-//    * You won't need it on your project.
-//    */
-//   window?: () => Window;
-// }
-
-
 
 const TopPage = () => {
-    // const { window } = props;
-    const [mobileOpen, setMobileOpen] = React.useState(false);
+    const [mobileOpen, setMobileOpen] = React.useState<boolean>(false);
+    const [BeerData, setBeerData] = React.useState<Beer[] | null>(null);
+
 
     const handleDrawerToggle = () => {
       setMobileOpen((prevState) => !prevState);
     };
 
-    const drawer = (
-      <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
-        <Typography variant="h6" sx={{ my: 2 }}>
-          MUI
-        </Typography>
-        <Divider />
-        <List>
-          {navItems.map((item) => (
-            <ListItem key={item} disablePadding>
-              <ListItemButton sx={{ textAlign: "center" }}>
-                <ListItemText primary={item} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-      </Box>
-    );
 
-    const container = undefined;
+async function fetchData() {
+  const ALLBeerUrl = import.meta.env.VITE_API_URL; //githubにpushしたくないからこうしている
+
+  try {
+    const response = await fetch(ALLBeerUrl);
+    if (!response.ok) {
+      throw new Error(`レスポンスステータス: ${response.status}`);
+    }
+    const data = await response.json();
+    // const dataJSON = JSON.stringify(data);
+    setBeerData(data.body.beers);
+    console.log();
+  } catch (error) {
+    console.error("データの取得に失敗しました:", error);
+  }
+};
+
+const AllBeer = (data: Beer[] | null) => {
+    if (!data || data.length === 0) {
+        return <Typography>No data available</Typography>;
+    }
+    return (
+        <>
+        {data.map((beer: Beer) => (
+            <Card sx={{ minWidth: 275,  height: 300}}>
+      <CardContent>
+        <Typography gutterBottom sx={{ color: 'text.secondary', fontSize: 14 }}>
+          {beer.id}
+        </Typography>
+        <Typography variant="h5" component="div">
+          {beer.name}
+        </Typography>
+        <Typography sx={{ color: 'text.secondary', mb: 1.5 }}>{beer.brewery}</Typography>
+        <Typography variant="body2">
+          {beer.type}
+          <br />
+          {beer.alcohol_content}
+        </Typography>
+      </CardContent>
+    </Card>
+    ))}
+    </>
+    )
+}
+
+
+  const drawer = (
+    <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
+      <Typography variant="h6" sx={{ my: 2 }}>
+        MUI
+      </Typography>
+      <Divider />
+      <List>
+        {navItems.map((item) => (
+          <ListItem key={item} disablePadding>
+            <ListItemButton sx={{ textAlign: "center" }}>
+              <ListItemText primary={item} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+    </Box>
+  );
+
+  const container = undefined;
   return (
     <>
       <Box sx={{ display: "flex" }}>
@@ -74,7 +130,7 @@ const TopPage = () => {
               component="div"
               sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
             >
-              MUI
+              BeerApp
             </Typography>
             <Box sx={{ display: { xs: "none", sm: "block" } }}>
               {navItems.map((item) => (
@@ -108,47 +164,19 @@ const TopPage = () => {
         <Box component="main" sx={{ p: 3 }}>
           <Toolbar />
           <Typography>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique
-            unde fugit veniam eius, perspiciatis sunt? Corporis qui ducimus
-            quibusdam, aliquam dolore excepturi quae. Distinctio enim at
-            eligendi perferendis in cum quibusdam sed quae, accusantium et
-            aperiam? Quod itaque exercitationem, at ab sequi qui modi delectus
-            quia corrupti alias distinctio nostrum. Minima ex dolor modi
-            inventore sapiente necessitatibus aliquam fuga et. Sed numquam
-            quibusdam at officia sapiente porro maxime corrupti perspiciatis
-            asperiores, exercitationem eius nostrum consequuntur iure aliquam
-            itaque, assumenda et! Quibusdam temporibus beatae doloremque
-            voluptatum doloribus soluta accusamus porro reprehenderit eos
-            inventore facere, fugit, molestiae ab officiis illo voluptates
-            recusandae. Vel dolor nobis eius, ratione atque soluta, aliquam
-            fugit qui iste architecto perspiciatis. Nobis, voluptatem! Cumque,
-            eligendi unde aliquid minus quis sit debitis obcaecati error,
-            delectus quo eius exercitationem tempore. Delectus sapiente,
-            provident corporis dolorum quibusdam aut beatae repellendus est
-            labore quisquam praesentium repudiandae non vel laboriosam quo ab
-            perferendis velit ipsa deleniti modi! Ipsam, illo quod. Nesciunt
-            commodi nihil corrupti cum non fugiat praesentium doloremque
-            architecto laborum aliquid. Quae, maxime recusandae? Eveniet dolore
-            molestiae dicta blanditiis est expedita eius debitis cupiditate
-            porro sed aspernatur quidem, repellat nihil quasi praesentium quia
-            eos, quibusdam provident. Incidunt tempore vel placeat voluptate
-            iure labore, repellendus beatae quia unde est aliquid dolor
-            molestias libero. Reiciendis similique exercitationem consequatur,
-            nobis placeat illo laudantium! Enim perferendis nulla soluta magni
-            error, provident repellat similique cupiditate ipsam, et tempore
-            cumque quod! Qui, iure suscipit tempora unde rerum autem saepe nisi
-            vel cupiditate iusto. Illum, corrupti? Fugiat quidem accusantium
-            nulla. Aliquid inventore commodi reprehenderit rerum reiciendis!
-            Quidem alias repudiandae eaque eveniet cumque nihil aliquam in
-            expedita, impedit quas ipsum nesciunt ipsa ullam consequuntur
-            dignissimos numquam at nisi porro a, quaerat rem repellendus.
-            Voluptates perspiciatis, in pariatur impedit, nam facilis libero
-            dolorem dolores sunt inventore perferendis, aut sapiente modi
-            nesciunt.
+            Welcome to the Beer App! This is a sample application built with React and Material-UI.
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={fetchData}
+              sx={{ mt: 2 }}
+            >
+              Fetch Beer Data
+            </Button>
+            {AllBeer(BeerData)}
           </Typography>
         </Box>
       </Box>
-      );
     </>
   );
 };
